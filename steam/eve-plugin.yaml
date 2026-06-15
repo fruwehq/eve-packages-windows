@@ -1,0 +1,16 @@
+api_version: eve.plugin/v1
+kind: package
+id: steam
+display_name: Steam
+commands:
+  install: {exec: scripts/package-plugin, args: [steam, install]}
+  status: {exec: scripts/package-plugin, args: [steam, status]}
+  down: {exec: scripts/package-plugin, args: [steam, down]}
+supports: {os_families: [windows], arches: [amd64]}
+down: {destructive: true}
+env: []
+install:
+  windows:
+    steps: [provision/windows/steam.ps1]
+    state_files: []
+    fallback: false

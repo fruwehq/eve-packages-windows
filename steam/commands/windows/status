@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+set -eu
+
+exec ./scripts/package-status-windows steam \
+  'C:\Program Files (x86)\Steam\steam.exe' \
+  'C:\Program Files\Steam\steam.exe'

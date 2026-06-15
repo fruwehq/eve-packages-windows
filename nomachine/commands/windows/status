@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+set -eu
+
+EVE_PACKAGE_STATUS_SERVICE_PATTERN=nxserver \
+exec ./scripts/package-status-windows nomachine \
+  'C:\Program Files\NoMachine\bin\nxserver.exe'

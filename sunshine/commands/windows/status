@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+set -eu
+
+exec ./scripts/package-status-windows sunshine \
+  'C:\Program Files\Sunshine\sunshine.exe' \
+  'C:\Program Files (x86)\Sunshine\sunshine.exe'

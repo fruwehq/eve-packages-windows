@@ -1,0 +1,37 @@
+api_version: eve.plugin/v1
+kind: package
+id: xpra
+display_name: Xpra
+commands:
+  install: {exec: scripts/package-plugin, args: [xpra, install]}
+  status: {exec: scripts/package-plugin, args: [xpra, status]}
+  down: {exec: scripts/package-plugin, args: [xpra, down]}
+supports:
+  os_families: [windows]
+  arches: [amd64]
+compatibility_enforced: true
+compatibility:
+  - platform: ubuntu
+    desktop: XFCE
+    session: X11
+    status: legacy
+    notes: Limited to Ubuntu 22.04/24.04; not an Ubuntu 26 path.
+  - platform: windows
+    desktop: Windows
+    session: Native
+    status: wip
+    notes: Available as an experimental package only.
+down: {destructive: true}
+env: []
+actions:
+  - id: xpra-desktop
+    label: Xpra Desktop
+    target: xpra.desktop
+  - id: xpra-attach
+    label: Xpra Attach
+    target: xpra.attach
+install:
+  windows:
+    steps: [provision/windows/xpra.ps1]
+    state_files: []
+    fallback: false

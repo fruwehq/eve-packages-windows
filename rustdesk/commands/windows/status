@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+set -eu
+
+EVE_PACKAGE_STATUS_PROCESS=rustdesk \
+EVE_PACKAGE_STATUS_SERVICE_PATTERN=rustdesk \
+exec ./scripts/package-status-windows rustdesk \
+  'C:\Program Files\RustDesk\rustdesk.exe' \
+  'C:\Program Files (x86)\RustDesk\rustdesk.exe' \
+  'C:\Users\Administrator\AppData\Local\rustdesk\rustdesk.exe' \
+  'C:\Windows\System32\config\systemprofile\AppData\Local\rustdesk\rustdesk.exe'

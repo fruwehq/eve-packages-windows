@@ -1,0 +1,53 @@
+api_version: eve.plugin/v1
+kind: package
+id: rdp
+display_name: Remote Desktop Protocol
+commands:
+  install: {exec: scripts/package-plugin, args: [rdp, install]}
+  status: {exec: scripts/package-plugin, args: [rdp, status]}
+  down: {exec: scripts/package-plugin, args: [rdp, down]}
+supports: {os_families: [windows]}
+compatibility_enforced: true
+compatibility:
+  - platform: windows
+    desktop: Windows
+    session: Native
+    status: supported
+    notes: Uses the built-in Windows RDP service.
+  - platform: ubuntu
+    desktop: XFCE
+    session: X11
+    status: supported
+    notes: Uses xrdp/xorgxrdp with an isolated XFCE session.
+  - platform: ubuntu
+    desktop: XFCE Headless
+    session: X11
+    status: supported
+    notes: Uses xrdp/xorgxrdp without a local display manager.
+  - platform: ubuntu
+    desktop: GNOME
+    session: Wayland
+    status: supported
+    notes: Uses GNOME Remote Desktop per-user RDP with gate credentials.
+  - platform: ubuntu
+    desktop: GNOME Headless
+    session: Wayland
+    status: supported
+    notes: Uses GNOME Remote Desktop per-user RDP with virtual monitor support.
+  - platform: ubuntu
+    desktop: KDE Plasma
+    session: Wayland
+    status: supported
+    notes: Uses krdp. FreeRDP with /gfx:AVC444 is recommended; macOS Windows App may not work.
+  - platform: ubuntu
+    desktop: KDE Plasma Headless
+    session: Wayland
+    status: supported
+    notes: Uses krdp with lock and power management disabled for unattended sessions.
+down: {destructive: true}
+env: [RDP_GATE_USER, RDP_GATE_PASSWORD]
+actions:
+  - id: rdp
+    label: RDP
+    target: rdp.open
+    native: true

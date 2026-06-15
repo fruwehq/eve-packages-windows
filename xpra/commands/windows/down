@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+set -eu
+
+exec ./scripts/package-down-windows xpra 'winget uninstall --id Xpra.Xpra --silent --accept-source-agreements; exit 0'

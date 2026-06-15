@@ -1,0 +1,60 @@
+api_version: eve.plugin/v1
+kind: package
+id: nomachine
+display_name: NoMachine
+commands:
+  install: {exec: scripts/package-plugin, args: [nomachine, install]}
+  status: {exec: scripts/package-plugin, args: [nomachine, status]}
+  down: {exec: scripts/package-plugin, args: [nomachine, down]}
+supports: {os_families: [windows]}
+compatibility_enforced: true
+compatibility:
+  - platform: windows
+    desktop: Windows
+    session: Native
+    status: supported
+    notes: Runs the NoMachine service against the active Windows desktop; connect with the Windows user's credentials.
+  - platform: ubuntu
+    desktop: XFCE
+    session: X11
+    status: supported
+    notes: NoMachine NX server attaches to the local X11 desktop; connect with the system user's password.
+  - platform: ubuntu
+    desktop: XFCE Headless
+    session: X11
+    status: supported
+    notes: NoMachine creates a virtual NX display when no physical/local session is attached.
+  - platform: ubuntu
+    desktop: GNOME
+    session: Wayland
+    status: wip
+    notes: NoMachine recommends X11 capture; unattended GNOME Wayland sharing still needs live validation.
+  - platform: ubuntu
+    desktop: GNOME Headless
+    session: Wayland
+    status: wip
+    notes: NoMachine recommends X11 capture; unattended GNOME Wayland sharing still needs live validation.
+  - platform: ubuntu
+    desktop: KDE Plasma
+    session: Wayland
+    status: wip
+    notes: NoMachine recommends X11 capture; unattended KDE Wayland sharing still needs live validation.
+  - platform: ubuntu
+    desktop: KDE Plasma Headless
+    session: Wayland
+    status: wip
+    notes: NoMachine recommends X11 capture; unattended KDE Wayland sharing still needs live validation.
+down: {destructive: true}
+env: [NOMACHINE_VERSION]
+actions:
+  - id: nomachine
+    label: NoMachine
+    target: nomachine.connect
+  - id: nomachine-info
+    label: NoMachine Info
+    target: nomachine.info
+install:
+  windows:
+    steps: [provision/windows/nomachine.ps1]
+    state_files: [env.json]
+    fallback: false

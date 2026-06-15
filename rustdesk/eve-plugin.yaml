@@ -1,0 +1,60 @@
+api_version: eve.plugin/v1
+kind: package
+id: rustdesk
+display_name: RustDesk
+commands:
+  install: {exec: scripts/package-plugin, args: [rustdesk, install]}
+  status: {exec: scripts/package-plugin, args: [rustdesk, status]}
+  down: {exec: scripts/package-plugin, args: [rustdesk, down]}
+supports: {os_families: [windows]}
+compatibility_enforced: true
+compatibility:
+  - platform: windows
+    desktop: Windows
+    session: Native
+    status: supported
+    notes: Runs as a service against the active Windows desktop.
+  - platform: ubuntu
+    desktop: XFCE
+    session: X11
+    status: supported
+    notes: Uses LightDM autologin plus an X11 desktop session.
+  - platform: ubuntu
+    desktop: XFCE Headless
+    session: X11
+    status: unsupported
+    notes: RustDesk needs an active local desktop session; use RDP for headless XFCE.
+  - platform: ubuntu
+    desktop: GNOME
+    session: Wayland
+    status: unsupported
+    notes: RustDesk cannot unattended-share GNOME Wayland without peer-side screen selection.
+  - platform: ubuntu
+    desktop: GNOME Headless
+    session: Wayland
+    status: unsupported
+    notes: RustDesk cannot unattended-share GNOME Wayland without peer-side screen selection.
+  - platform: ubuntu
+    desktop: KDE Plasma
+    session: Wayland
+    status: unsupported
+    notes: RustDesk unattended Wayland sharing is not a supported KDE path.
+  - platform: ubuntu
+    desktop: KDE Plasma Headless
+    session: Wayland
+    status: unsupported
+    notes: RustDesk unattended Wayland sharing is not a supported KDE path.
+down: {destructive: true}
+env: [RUSTDESK_SERVER, RUSTDESK_KEY, RUSTDESK_PASSWORD]
+actions:
+  - id: rustdesk
+    label: RustDesk
+    target: rustdesk.connect
+  - id: rustdesk-info
+    label: RustDesk Info
+    target: rustdesk.info
+install:
+  windows:
+    steps: [provision/windows/rustdesk.ps1]
+    state_files: [env.json]
+    fallback: false

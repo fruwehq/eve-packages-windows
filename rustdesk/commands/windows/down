@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+set -eu
+
+exec ./scripts/package-down-windows rustdesk 'schtasks /Delete /TN EveRustDeskStartup /F 2>$null; schtasks /Delete /TN EveRustDeskAutostart /F 2>$null; schtasks /Delete /TN EveRustDeskConfigure /F 2>$null; Remove-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run" -Name EveRustDesk -ErrorAction SilentlyContinue; winget uninstall --id RustDesk.RustDesk --silent --accept-source-agreements; exit 0'

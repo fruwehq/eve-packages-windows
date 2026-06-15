@@ -1,0 +1,59 @@
+api_version: eve.plugin/v1
+kind: package
+id: sunshine
+display_name: Sunshine
+commands:
+  install: {exec: scripts/package-plugin, args: [sunshine, install]}
+  status: {exec: scripts/package-plugin, args: [sunshine, status]}
+  down: {exec: scripts/package-plugin, args: [sunshine, down]}
+supports: {os_families: [windows]}
+compatibility_enforced: true
+compatibility:
+  - platform: windows
+    desktop: Windows
+    session: Native
+    status: supported
+    notes: Uses Virtual Display Driver as the intended single Sunshine display.
+  - platform: ubuntu
+    desktop: XFCE
+    session: X11
+    status: wip
+    notes: Current Linux path uses X11 capture; ultrawide 5120x1440 still needs live validation.
+  - platform: ubuntu
+    desktop: XFCE Headless
+    session: X11
+    status: wip
+    notes: Current Linux path uses X11 capture; ultrawide 5120x1440 still needs live validation.
+  - platform: ubuntu
+    desktop: GNOME
+    session: Wayland
+    status: wip
+    notes: Wayland capture is not the stable default path yet.
+down: {destructive: true}
+env: [EPHEMERAL_DISPLAY_FPS, EPHEMERAL_DISPLAY_RESOLUTION, EPHEMERAL_SUNSHINE_PASSWORD, SUNSHINE_VERSION, SUNSHINE_MAX_BITRATE_KBPS]
+actions:
+  - id: sunshine
+    label: Sunshine
+    target: sunshine.open
+  - id: pair-moonlight
+    label: Pair Moonlight
+    target: moonlight.pair
+  - id: moonlight
+    label: Moonlight
+    target: moonlight.open
+install:
+  windows:
+    # Sunshine works without ViGEmBus, but Moonlight gamepad input only routes
+    # through a kernel-mode driver that requests a reboot.  Stay on the full
+    # provisioning path so a "package install" actually delivers a usable
+    # Sunshine.
+    steps:
+      - provision/windows/10_sunshine.ps1
+      - provision/windows/11_vigembus.ps1
+      - provision/windows/20_vdd.ps1
+      - provision/windows/21_vdd_config.ps1
+      - provision/windows/22_vdd_only_display.ps1
+      - provision/windows/23_sunshine_target_vdd.ps1
+      - provision/windows/31_virtual_audio.ps1
+    state_files: []
+    fallback: true

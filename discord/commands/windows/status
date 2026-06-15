@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+set -eu
+
+# Discord installs per-user under %LOCALAPPDATA%\Discord. Provisioning
+# runs as Administrator, so check that account's AppData plus the
+# system-profile path for any per-machine variants.
+EVE_PACKAGE_STATUS_PROCESS=Discord \
+exec ./scripts/package-status-windows discord \
+  'C:\Users\Administrator\AppData\Local\Discord\Update.exe' \
+  'C:\Windows\System32\config\systemprofile\AppData\Local\Discord\Update.exe'

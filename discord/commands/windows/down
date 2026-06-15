@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+set -eu
+
+exec ./scripts/package-down-windows discord 'winget uninstall --id Discord.Discord --silent --accept-source-agreements; exit 0'

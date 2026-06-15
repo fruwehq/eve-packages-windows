@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+set -eu
+
+exec ./scripts/package-down-windows nomachine '& "C:\Program Files\NoMachine\bin\nxserver.exe" --shutdown 2>$null; & "C:\Program Files\NoMachine\Uninstaller.exe" /verysilent 2>$null; exit 0'

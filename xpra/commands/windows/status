@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+set -eu
+
+exec ./scripts/package-status-windows xpra \
+  'C:\Program Files\Xpra\Xpra.exe' \
+  'C:\Program Files\Xpra\Xpra_cmd.exe' \
+  'C:\Program Files (x86)\Xpra\Xpra.exe'
