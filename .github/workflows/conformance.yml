@@ -10,18 +10,18 @@ jobs:
   plugin-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # eve is not published to PyPI yet — clone the repo for its conformance
       # harness, schema, AND the core `scripts/package-plugin` dispatcher that
       # every package manifest `exec` resolves to at the eve checkout root.
       # Once eve ships, replace this step with `pip install eve`.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           repository: fruwehq/eve
           path: eve
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
