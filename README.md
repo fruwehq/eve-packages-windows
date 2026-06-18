@@ -12,16 +12,18 @@ Each shares its `id` with the matching Linux half in
 `eve-packages-linux`; the two halves declare disjoint `supports.os_families` and
 eve merges them at load time into one logical package.
 
-## Consumption
+## Use it
 
-Pull this catalog into an eve checkout alongside the core:
+This is an external plugin source — nothing is bundled in eve core:
 
+```sh
+eve plugin source add --recommended eve-packages-windows
+eve pull
 ```
-eve pull github.com/fruwehq/eve-packages-windows
-```
 
-`eve pull` drops each `<id>/` package under `plugins/packages/` so eve discovers
-it like any built-in. You do **not** clone this repo manually or vendor anything.
+(or add it from the eve TUI's plugin screen — press `g`). It's in eve's
+recommended-source catalog; `eve pull` materializes the packages so eve discovers
+them — you don't clone or vendor anything by hand.
 
 ## How packages run
 
