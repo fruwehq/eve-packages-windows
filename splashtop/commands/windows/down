@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-set -eu
-
-exec ./scripts/package-down-windows splashtop 'winget uninstall --id Splashtop.SplashtopStreamer --silent --accept-source-agreements 2>$null; exit 0'
