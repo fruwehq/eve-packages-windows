@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-set -eu
-
-EVE_PACKAGE_STATUS_SERVICE_PATTERN=SplashtopRemoteService \
-exec ./scripts/package-status-windows splashtop \
-  'C:\Program Files (x86)\Splashtop\Splashtop Remote\Server\SRServer.exe' \
-  'C:\Program Files\Splashtop\Splashtop Remote\Server\SRServer.exe'
