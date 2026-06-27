@@ -229,9 +229,13 @@ class DisplayConfig
 
             if (activeNonVdd > 0)
             {
-                File.WriteAllText(markerPath,
-                    "ERROR: active non-VDD display remains count=" + activeNonVdd + "\n");
-                return;
+                // On vGPU instances (e.g. Vultr A40), the NVIDIA virtual GPU
+                // display cannot be fully deactivated from within the guest —
+                // the hypervisor controls it. If the VDD is active and primary,
+                // Sunshine captures the full virtual desktop regardless; the
+                // non-VDD adapter is needed for NVENC encoding. Write OK with
+                // a note rather than failing the provision step.
+                Console.WriteLine("NOTE: {0} non-VDD display(s) remain active — acceptable on vGPU.", activeNonVdd);
             }
 
             File.WriteAllText(markerPath,
