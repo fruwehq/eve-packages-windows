@@ -7,6 +7,12 @@ commands:
   status: {exec: scripts/package-plugin, args: [nomachine, status]}
   down: {exec: scripts/package-plugin, args: [nomachine, down]}
 supports: {os_families: [windows]}
+config_schema:
+  config:
+    version:
+      type: string
+      env_var: NOMACHINE_VERSION
+      description: "NoMachine server version to install (pinned)."
 compatibility_enforced: true
 compatibility:
   - platform: windows
