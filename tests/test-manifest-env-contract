@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+"""Validate package config/secret mappings against the declared env surface."""
+
+from pathlib import Path
+
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+
+for path in sorted(ROOT.glob("*/eve-plugin.yaml")):
+    plugin = yaml.safe_load(path.read_text(encoding="utf-8"))
+    declared = plugin.get("env") or []
+    assert declared == sorted(set(declared)), f"{path}: env must be sorted and unique"
+    mapped = {
+        str(name)
+        for section in ("config", "secrets")
+        for spec in ((plugin.get("config_schema") or {}).get(section) or {}).values()
+        if isinstance(spec, dict) and spec.get("env_var")
+        for name in (
+            spec["env_var"] if isinstance(spec["env_var"], list) else [spec["env_var"]]
+        )
+    }
+    missing = sorted(mapped - set(declared))
+    assert not missing, f"{path}: env omits config_schema mappings: {missing}"
+
+print("manifest environment contracts passed")

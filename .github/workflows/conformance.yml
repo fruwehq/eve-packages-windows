@@ -27,6 +27,9 @@ jobs:
 
       - run: pip install jsonschema pyyaml
 
+      - name: Validate manifest environment contracts
+        run: python tests/test-manifest-env-contract
+
       - name: Run plugin-test against every package
         run: |
           set -e

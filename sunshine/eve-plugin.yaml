@@ -7,6 +7,50 @@ commands:
   status: {exec: scripts/package-plugin, args: [sunshine, status]}
   down: {exec: scripts/package-plugin, args: [sunshine, down]}
 supports: {os_families: [windows]}
+config_schema:
+  config:
+    max_bitrate_kbps:
+      type: integer
+      env_var: SUNSHINE_MAX_BITRATE_KBPS
+      description: Maximum Sunshine host streaming bitrate, in kilobits per second.
+    moonlight_bitrate_kbps:
+      type: integer
+      env_var: EPHEMERAL_MOONLIGHT_BITRATE_KBPS
+      description: Moonlight client streaming bitrate, in kilobits per second.
+    moonlight_display_mode:
+      type: enum
+      enum:
+      - borderless
+      - fullscreen
+      - windowed
+      env_var: EPHEMERAL_MOONLIGHT_DISPLAY_MODE
+      description: Moonlight client window mode.
+    moonlight_video_codec:
+      type: enum
+      enum:
+      - AV1
+      - H.264
+      - HEVC
+      - auto
+      env_var: EPHEMERAL_MOONLIGHT_VIDEO_CODEC
+      description: Preferred Moonlight client video codec.
+    moonlight_video_decoder:
+      type: enum
+      enum:
+      - auto
+      - hardware
+      - software
+      env_var: EPHEMERAL_MOONLIGHT_VIDEO_DECODER
+      description: Moonlight client video decoder selection.
+    version:
+      type: string
+      env_var: SUNSHINE_VERSION
+      description: Sunshine version to install (pinned).
+  secrets:
+    password:
+      type: string
+      env_var: EPHEMERAL_SUNSHINE_PASSWORD
+      description: Password for the Sunshine web UI / Moonlight pairing flow.
 compatibility_enforced: true
 compatibility:
   - platform: windows
@@ -30,7 +74,7 @@ compatibility:
     status: wip
     notes: Wayland capture is not the stable default path yet.
 down: {destructive: true}
-env: [EPHEMERAL_DISPLAY_FPS, EPHEMERAL_DISPLAY_RESOLUTION, EPHEMERAL_SUNSHINE_PASSWORD, SUNSHINE_VERSION, SUNSHINE_MAX_BITRATE_KBPS]
+env: [EPHEMERAL_DISPLAY_FPS, EPHEMERAL_DISPLAY_RESOLUTION, EPHEMERAL_MOONLIGHT_BITRATE_KBPS, EPHEMERAL_MOONLIGHT_DISPLAY_MODE, EPHEMERAL_MOONLIGHT_VIDEO_CODEC, EPHEMERAL_MOONLIGHT_VIDEO_DECODER, EPHEMERAL_SUNSHINE_PASSWORD, SUNSHINE_MAX_BITRATE_KBPS, SUNSHINE_VERSION]
 actions:
   - id: sunshine
     label: Sunshine
