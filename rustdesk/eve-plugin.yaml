@@ -7,6 +7,21 @@ commands:
   status: {exec: scripts/package-plugin, args: [rustdesk, status]}
   down: {exec: scripts/package-plugin, args: [rustdesk, down]}
 supports: {os_families: [windows]}
+config_schema:
+  config:
+    server:
+      type: host
+      env_var: RUSTDESK_SERVER
+      description: "RustDesk relay/ID server address. Leave unset to use the public servers."
+  secrets:
+    key:
+      type: string
+      env_var: RUSTDESK_KEY
+      description: "RustDesk server public key."
+    password:
+      type: string
+      env_var: RUSTDESK_PASSWORD
+      description: "RustDesk permanent unattended-access password."
 compatibility_enforced: true
 compatibility:
   - platform: windows
@@ -45,7 +60,7 @@ compatibility:
     status: unsupported
     notes: RustDesk unattended Wayland sharing is not a supported KDE path.
 down: {destructive: true}
-env: [RUSTDESK_SERVER, RUSTDESK_KEY, RUSTDESK_PASSWORD]
+env: [RUSTDESK_KEY, RUSTDESK_PASSWORD, RUSTDESK_SERVER]
 actions:
   - id: rustdesk
     label: RustDesk

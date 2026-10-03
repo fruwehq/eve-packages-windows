@@ -1,0 +1,5 @@
+api_version: eve.plugin/v1
+kind: bundle
+id: gaming-streaming
+display_name: Gaming & Streaming
+members: [steam, sunshine, rustdesk]

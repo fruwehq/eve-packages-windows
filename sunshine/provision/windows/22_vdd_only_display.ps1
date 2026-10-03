@@ -19,6 +19,47 @@ $marker    = Join-Path $stateDir 'display-config-done.flag'
 $dcLog     = Join-Path $stateDir 'display-config.log'
 $rebootFlg = Join-Path $stateDir 'reboot.flag'
 
+# ---- Ensure the VDD is healthy before reconfiguring the desktop ----
+# On some IddCx builds the VDD comes up in an error state (Code 43) after
+# install, and an OS reboot alone does not clear it - only a device disable/
+# enable cycle initializes it so it presents its virtual monitor. This must run
+# before we disconnect the GPU display below: without a healthy VDD there is no
+# display to switch to, so Windows refuses to release the GPU display (it
+# "reactivates") and this step fails. Cycle the device until it reports OK.
+$vddDevices = @(Get-PnpDevice -Class Display -PresentOnly -ErrorAction SilentlyContinue |
+    Where-Object { $_.FriendlyName -like '*Virtual Display Driver*' })
+foreach ($vdev in $vddDevices) {
+    if ($vdev.Status -ne 'OK') {
+        Write-Host "VDD not healthy (Status=$($vdev.Status)) - cycling device to initialize: $($vdev.InstanceId)"
+        Disable-PnpDevice -InstanceId $vdev.InstanceId -Confirm:$false -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 2
+        Enable-PnpDevice -InstanceId $vdev.InstanceId -Confirm:$false -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 5
+    }
+}
+$vddHealthy = @(Get-PnpDevice -Class Display -PresentOnly -ErrorAction SilentlyContinue |
+    Where-Object { $_.FriendlyName -like '*Virtual Display Driver*' -and $_.Status -eq 'OK' })
+if ($vddHealthy.Count -eq 0) {
+    throw "Virtual Display Driver is not healthy (Code 43) and could not be initialized via disable/enable."
+}
+# Device "OK" precedes the virtual monitor actually attaching - the display
+# reconfiguration below has nothing to switch to until the VDD is presenting a
+# mode, so wait for it (otherwise the GPU display can't be released and this
+# step fails with a non-VDD display remaining).
+$vddRes = 0
+$deadline = (Get-Date).AddSeconds(45)
+do {
+    $vddRes = [int]((Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -like '*Virtual Display Driver*' } |
+        Select-Object -First 1).CurrentHorizontalResolution)
+    if ($vddRes -gt 0) { break }
+    Start-Sleep -Seconds 3
+} while ((Get-Date) -lt $deadline)
+if ($vddRes -le 0) {
+    throw "Virtual Display Driver is OK but did not present a display within 45s."
+}
+Write-Host "VDD healthy and presenting (${vddRes}px wide)."
+
 # ---- Disable Microsoft Basic Display Adapter ----
 # Match by FriendlyName rather than full PnP InstanceID. The QEMU/Bochs vendor
 # (1234:1111) is consistent across cloud Windows VMs, but the trailing instance
@@ -229,6 +270,10 @@ class DisplayConfig
 
             if (activeNonVdd > 0)
             {
+                // VDD-only is required: if any non-VDD display remains active,
+                // Sunshine may capture the wrong display, so fail rather than
+                // proceed. (Underpowered single-vCPU vGPU profiles can leave the
+                // GPU display attached - those machines are not supported.)
                 File.WriteAllText(markerPath,
                     "ERROR: active non-VDD display remains count=" + activeNonVdd + "\n");
                 return;
